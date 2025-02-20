@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagram-Like Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./chat_sdk.css">
+    <link rel="stylesheet" href="./sdk.css">
 </head>
 <body class="bg-gray-100">
 	<div class="relative isolate overflow-hidden bg-white px-6 py-24 sm:py-32 lg:overflow-visible lg:px-0">
@@ -70,9 +70,8 @@
       </div>
       
     <script type="module">
-        //import ChatSDK from './chat_sdk.js';
-		import ChatSDK from './sdk-encrypted.js';
-        new ChatSDK();
+      import ChatSDK from './sdk.js';
+      new ChatSDK();
     </script>
 </body>
 </html>

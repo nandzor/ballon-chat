@@ -67,8 +67,7 @@ class ChatSDK {
         // Add audio element for notifications
         const audio = document.createElement('audio');
         audio.id = 'notificationSound';
-        audio.src = 'http://8.219.234.252/beep.mp3';
-        audio.preload = 'auto';
+        audio.src = './beep.mp3';
         document.body.appendChild(audio);
     }
 
@@ -122,23 +121,27 @@ class ChatSDK {
             badge.style.display = 'none';
         }
     }
+    
+    getOrCreateAudioContext() {
+        return new (window.AudioContext || window.webkitAudioContext)();
+    }
 
     playNotificationSound() {
         const sound = document.getElementById('notificationSound');
-			sound.currentTime = 0; // Reset sound to start
+        sound.currentTime = 0; // Reset sound to start
 
-			// Use AudioContext to bypass autoplay restrictions
-			const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-			fetch(sound.src)
-				.then(response => response.arrayBuffer())
-				.then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-				.then(audioBuffer => {
-					const source = audioContext.createBufferSource();
-					source.buffer = audioBuffer;
-					source.connect(audioContext.destination);
-					source.start(0); // Play immediately
-				})
-				.catch(error => console.error('Error loading audio:', error));
+        const audioCtx = this.getOrCreateAudioContext();
+
+        fetch(sound.src)
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioCtx.decodeAudioData(arrayBuffer))
+            .then(audioBuffer => {
+                const source = audioCtx.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioCtx.destination);
+                source.start(0); // Play immediately
+            })
+            .catch(error => console.error('Error loading audio:', error));
     }
 
     vibrateChatBalloon() {
