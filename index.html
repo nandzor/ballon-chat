@@ -95,10 +95,19 @@
             <!-- Chat Input -->
             <div class="border-t border-gray-200 p-4">
                 <div class="flex items-center space-x-2">
-                    <input type="text" id="messageInput" placeholder="Message..."
-                        class="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-purple-500" />
-                    <button id="sendButton"
-                        class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:opacity-90 transition duration-200">
+                    <!-- Textarea with smart fluid behavior -->
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="Message..." 
+                        class="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-purple-500 resize-none overflow-hidden transition-all duration-200"
+                        style="min-height: 40px; max-height: 120px;"
+                    ></textarea>
+                
+                    <!-- Send Button -->
+                    <button 
+                        id="sendButton" 
+                        class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:opacity-90 transition duration-200"
+                    >
                         Send
                     </button>
                 </div>
@@ -233,20 +242,61 @@
             messagesList.appendChild(li);
             messagesList.scrollTop = messagesList.scrollHeight;
         }
-
-        const sendButton = document.getElementById('sendButton');
-        const messageInput = document.getElementById('messageInput');
+        
         const chatButton = document.getElementById('chatButton');
         const chatWindow = document.getElementById('chatWindow');
         const closeChat = document.getElementById('closeChat');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
 
         sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') sendMessage();
-        });
-
         chatButton.addEventListener('click', toggleChat);
         closeChat.addEventListener('click', toggleChat);
+    
+        // Function to adjust textarea height dynamically
+        const adjustTextareaHeight = (textarea) => {
+            // Temporarily reset height to recalculate scrollHeight
+            textarea.style.height = 'auto';
+            textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`; // Cap at max-height
+        };
+
+        // Auto-resizing textarea on input
+        messageInput.addEventListener('input', () => {
+            adjustTextareaHeight(messageInput);
+        });
+
+        // Handle Shift + Enter for new lines and Enter for sending
+        messageInput.addEventListener('keydown', (event) => {
+            // Check if ONLY the Enter key is pressed (no modifiers)
+            if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
+                // Prevent default behavior and trigger send action
+                event.preventDefault();
+                sendButton.click();
+            } else if (event.shiftKey && event.key === 'Enter') {
+                // Allow new line when Shift + Enter is pressed
+                return true;
+            }
+        });
+
+        // Handle sending the message
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value.trim();
+
+            if (message) {
+                console.log('Message sent:', message);
+                // Clear the input after sending the message
+                messageInput.value = '';
+                // Reset the height of the textarea
+                adjustTextareaHeight(messageInput);
+            }
+        });
+
+        // Optional: Focus on the textarea when the page loads
+        messageInput.focus();
+
+        // Initial height adjustment in case of pre-filled content
+        adjustTextareaHeight(messageInput);
+      
 
         function toggleChat() {
             if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
