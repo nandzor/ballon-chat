@@ -254,7 +254,7 @@
                 isChatOpen = true; // Mark chat as open
                 unreadMessagesCount = 0; // Reset unread count when opening the chat
                 updateBadge();
-                fetchMessages(); // Fetch messages when opening the chat
+                //fetchMessages(); // Fetch messages when opening the chat
             } else {
                 chatWindow.style.display = 'none';
                 isChatOpen = false; // Mark chat as closed
@@ -277,11 +277,7 @@
                     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                     messageInput.value = '';
                     // Optionally, you can add the sent message to the UI immediately
-                    addMessageToChat({
-                        sender: currentUser,
-                        message: messageText,
-                        timestamp: new Date().toISOString()
-                    });
+                    
                 } catch (error) {
                     console.error('Error sending message:', error);
                 }
