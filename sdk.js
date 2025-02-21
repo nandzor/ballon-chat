@@ -69,6 +69,7 @@ class ChatSDK {
         audio.id = 'notificationSound';
         audio.src = './beep.mp3';
         document.body.appendChild(audio);
+        this.fetchMessages();
     }
 
     // ... (rest of the methods from the previous version)
@@ -211,11 +212,7 @@ class ChatSDK {
                     body: JSON.stringify(payload),
                 });
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                this.addMessageToChat({
-                    sender: this.currentUser,
-                    message: messageText,
-                    timestamp: new Date().toISOString()
-                });
+                
             } catch (error) {
                 console.error('Error sending message:', error);
             }
@@ -230,7 +227,7 @@ class ChatSDK {
             this.isChatOpen = true;
             this.unreadMessagesCount = 0;
             this.updateBadge();
-            this.fetchMessages();
+            
         } else {
             chatWindow.style.display = 'none';
             this.isChatOpen = false;
